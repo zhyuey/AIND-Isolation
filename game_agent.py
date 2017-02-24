@@ -37,8 +37,15 @@ def custom_score(game, player):
         The heuristic value of the current game state to the specified player.
     """
 
-    # TODO: finish this function!
-    raise NotImplementedError
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    own_moves = len(game.get_legal_moves(player))
+    opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
+    return float(own_moves - opp_moves)
 
 
 class CustomPlayer:
@@ -80,6 +87,11 @@ class CustomPlayer:
         self.time_left = None
         self.TIMER_THRESHOLD = timeout
 
+        if self.method == 'minimax':
+            self.search_func = self.minimax
+        elif self.method == 'alphabeta':
+            self.search_func = self.alphabeta
+
     def get_move(self, game, legal_moves, time_left):
         """Search for the best move from the available legal moves and return a
         result before the time limit expires.
@@ -118,7 +130,10 @@ class CustomPlayer:
 
         self.time_left = time_left
 
-        # TODO: finish this function!
+
+        if not legal_moves:
+            return (-1, -1)
+
 
         # Perform any required initializations, including selecting an initial
         # move from the game board (i.e., an opening book), or returning
@@ -129,14 +144,19 @@ class CustomPlayer:
             # here in order to avoid timeout. The try/except block will
             # automatically catch the exception raised by the search method
             # when the timer gets close to expiring
-            pass
+            best_move = legal_moves[random.randint(0, len(legal_moves) - 1)]
+            if self.iterative:
+                for max_depth in range(self.search_depth):
+                    score, best_move = self.search_func(game, max_depth + 1, True)
+            else:
+                score, best_move = self.search_func(game, self.search_depth, True)
 
         except Timeout:
             # Handle any actions required at timeout, if necessary
-            pass
+            return best_move
 
         # Return the best move from the last completed search iteration
-        raise NotImplementedError
+        return best_move
 
     def minimax(self, game, depth, maximizing_player=True):
         """Implement the minimax search algorithm as described in the lectures.
@@ -171,9 +191,22 @@ class CustomPlayer:
         """
         if self.time_left() < self.TIMER_THRESHOLD:
             raise Timeout()
+        if maximizing_player:
+            minimax_func = max
+        else:
+            minimax_func = min
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        legal_moves = game.get_legal_moves(self)
+
+        if not legal_moves:
+            return self.score(game, self), (-1, -1)
+
+        if depth == 1:
+            score, best_move = minimax_func([(self.score(game.forecast_move(m), self), m) for m in legal_moves])
+        else:
+            score, best_move = minimax_func([(self.search_func(game.forecast_move(m), depth - 1, not maximizing_player)[1], m) for m in legal_moves])
+
+        return score, best_move
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf"), maximizing_player=True):
         """Implement minimax search with alpha-beta pruning as described in the

@@ -140,9 +140,9 @@ def main():
     HEURISTICS = [("Null", null_score),
                   ("Open", open_move_score),
                   ("Improved", improved_score)]
-    AB_ARGS = {"search_depth": 5, "method": 'alphabeta', "iterative": False}
+    AB_ARGS = {"search_depth": 5, "method": 'minimax', "iterative": False}
     MM_ARGS = {"search_depth": 3, "method": 'minimax', "iterative": False}
-    CUSTOM_ARGS = {"method": 'alphabeta', 'iterative': True}
+    CUSTOM_ARGS = {"method": 'minimax', 'iterative': True}
 
     # Create a collection of CPU agents using fixed-depth minimax or alpha beta
     # search, or random selection.  The agent names encode the search method
