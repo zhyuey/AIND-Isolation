@@ -106,7 +106,7 @@ def timeout(time_limit):
                 return res
             except QueueEmptyError:
                 raise TimeoutError("Test aborted due to timeout. Test was " +
-                                   "expected to finish in less than {} second(s).".format(time_limit))
+                                  "expected to finish in less than {} second(s).".format(time_limit))
 
         return testWrapper
 
@@ -306,7 +306,7 @@ class Project1Test(unittest.TestCase):
                              "branch being searched."))
 
     @timeout(5)
-    # @unittest.skip("Skip get_move test.")  # Uncomment this line to skip test
+    #@unittest.skip("Skip get_move test.")  # Uncomment this line to skip test
     def test_get_move_interface(self):
         """ Test CustomPlayer.get_move interface with simple input """
         h, w = 9, 9  # board size
@@ -405,7 +405,6 @@ class Project1Test(unittest.TestCase):
                                           iterative_search, method,
                                           loc1=starting_location,
                                           loc2=adversary_location)
-
             # disable search timeout by returning a constant value
             agentUT.time_left = lambda: 1e3
             _, move = agentUT.minimax(board, test_depth)
@@ -423,7 +422,7 @@ class Project1Test(unittest.TestCase):
                 method, test_depth, expected_moves[idx // 2], move))
 
     @timeout(20)
-    # @unittest.skip("Skip alpha-beta test.")  # Uncomment this line to skip test
+    #@unittest.skip("Skip alpha-beta test.")  # Uncomment this line to skip test
     def test_alphabeta(self):
         """ Test CustomPlayer.alphabeta
 
@@ -477,8 +476,8 @@ class Project1Test(unittest.TestCase):
                 method, test_depth, first_branch, move))
 
 
-    @timeout(20)
-    # @unittest.skip("Skip iterative deepening test.")  # Uncomment this line to skip test
+    #@timeout(20)
+    #@unittest.skip("Skip iterative deepening test.")  # Uncomment this line to skip test
     def test_get_move(self):
         """ Test iterative deepening in CustomPlayer.get_move by placing an
         agent on the game board and performing ID minimax search, which
