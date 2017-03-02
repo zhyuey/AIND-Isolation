@@ -36,9 +36,9 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # return custom_score_dist(game, player)
-    # return custom_score_target(game, player)
-    return custom_score_simple_combination(game, player)
+    #return custom_score_dist(game, player)
+    return custom_score_target(game, player)
+    #return custom_score_simple_combination(game, player)
 
 def custom_score_simple_combination(game, player):
     if game.is_loser(player):
@@ -69,10 +69,10 @@ def custom_score_target(game, player):
 
     if player == game.inactive_player:
         if own_last_move in opp_legal_moves:
-            score += 1.5
-    else:
-        if opp_last_move in own_legal_moves:
-            score -= 1.0
+            score += 4.0
+    #else:
+        #if opp_last_move in own_legal_moves:
+        #    score -= 1.0
 
     return score
 
@@ -94,7 +94,7 @@ def custom_score_dist(game, player):
 
     dist = abs(own_last_move[0] - opp_last_move[0]) + abs(own_last_move[1] - opp_last_move[1])
 
-    return dist * 0.1
+    return score + dist * 0.1
 
 
 class CustomPlayer:
@@ -174,38 +174,24 @@ class CustomPlayer:
 
         self.time_left = time_left
 
-        # TODO: finish this function!
-
         # If there are no legal moves, return immediately
         if not legal_moves:
             return(-1, -1)
-
         try:
-            # Determine which search method to use
-
             if self.method == 'minimax':
-
                 self.search_func = self.minimax
-
             elif self.method == 'alphabeta':
-
                 self.search_func = self.alphabeta
 
             if self.iterative:
-
                 for max_depth in range(game.width * game.height - 1):
-
                     score, best_move = self.search_func(game, max_depth + 1, True)
-
             else:
-
                 score, best_move = self.search_func(game, self.search_depth, True)
-
-
         except Timeout:
             return best_move
 
-        # Return the best move from the last completed search iteration
+       # Return the best move from the last completed search iteration
         return best_move
 
     def minimax(self, game, depth, maximizing_player=True):
@@ -248,27 +234,17 @@ class CustomPlayer:
             return self.score(game, self), (-1, -1)
 
         if maximizing_player:
-
             mm_func = max
-
         else:
-
             mm_func = min
 
         if depth == 1:
-
             score_list = [(self.score(game.forecast_move(m), self), m) for m in legal_moves]
-
             return mm_func(score_list)
-
         else:
-
             score_list = [(self.minimax(game.forecast_move(m), depth - 1, not maximizing_player)[0], m) for m in
                           legal_moves]
-
             return mm_func(score_list)
-
-
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf"), maximizing_player=True):
         """Implement minimax search with alpha-beta pruning as described in the
@@ -322,39 +298,24 @@ class CustomPlayer:
         best_move = legal_moves[0]
 
         if maximizing_player:
-
             score = float('-inf')
-
             for move in legal_moves:
-
                 score_tmp = self.alphabeta(game.forecast_move(move), depth - 1, alpha, beta, False)[0]
-
                 if score_tmp > score:
                     score = score_tmp
-
                     best_move = move
-
                 if (score >= beta):
                     return score, move
-
                 alpha = max(alpha, score)
-
         else:
-
             score = float('inf')
-
             for move in legal_moves:
-
                 score_tmp = self.alphabeta(game.forecast_move(move), depth - 1, alpha, beta, True)[0]
-
                 if score_tmp < score:
                     score = score_tmp
-
                     best_move = move
-
                 if (score <= alpha):
                     return score, move
-
                 beta = min(beta, score)
 
         return score, best_move
