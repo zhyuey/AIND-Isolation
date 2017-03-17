@@ -41,6 +41,27 @@ def custom_score(game, player):
     #return custom_score_simple_combination(game, player)
 
 def custom_score_simple_combination(game, player):
+    """Calculate the heuristic value of a game state from the point of view
+    of the given player.
+
+    Note: this function should be called from within a Player instance as
+    `self.score()` -- you should not need to call this function directly.
+
+    Parameters
+    ----------
+    game : `isolation.Board`
+        An instance of `isolation.Board` encoding the current state of the
+        game (e.g., player locations and blocked cells).
+
+    player : object
+        A player instance in the current game (i.e., an object corresponding to
+        one of the player objects `game.__player_1__` or `game.__player_2__`.)
+
+    Returns
+    -------
+    float
+        The heuristic value of the current game state to the specified player.
+    """
     if game.is_loser(player):
         return float("-inf")
 
@@ -52,6 +73,27 @@ def custom_score_simple_combination(game, player):
     return float(own_moves - 0.3 * opp_moves)
 
 def custom_score_target(game, player):
+    """Calculate the heuristic value of a game state from the point of view
+    of the given player.
+
+    Note: this function should be called from within a Player instance as
+    `self.score()` -- you should not need to call this function directly.
+
+    Parameters
+    ----------
+    game : `isolation.Board`
+        An instance of `isolation.Board` encoding the current state of the
+        game (e.g., player locations and blocked cells).
+
+    player : object
+        A player instance in the current game (i.e., an object corresponding to
+        one of the player objects `game.__player_1__` or `game.__player_2__`.)
+
+    Returns
+    -------
+    float
+        The heuristic value of the current game state to the specified player.
+    """
     if game.is_loser(player):
         return float("-inf")
     if game.is_winner(player):
@@ -62,21 +104,36 @@ def custom_score_target(game, player):
     own_last_move = game.get_player_location(player)
 
     opp_legal_moves = game.get_legal_moves(game.get_opponent(player))
-    opp_moves = len(opp_legal_moves)
-    opp_last_move = game.get_player_location(game.get_opponent(player))
-
     score = float(own_moves)
 
     if player == game.inactive_player:
         if own_last_move in opp_legal_moves:
             score += 4.0
-    #else:
-        #if opp_last_move in own_legal_moves:
-        #    score -= 1.0
 
     return score
 
 def custom_score_dist(game, player):
+    """Calculate the heuristic value of a game state from the point of view
+    of the given player.
+
+    Note: this function should be called from within a Player instance as
+    `self.score()` -- you should not need to call this function directly.
+
+    Parameters
+    ----------
+    game : `isolation.Board`
+        An instance of `isolation.Board` encoding the current state of the
+        game (e.g., player locations and blocked cells).
+
+    player : object
+        A player instance in the current game (i.e., an object corresponding to
+        one of the player objects `game.__player_1__` or `game.__player_2__`.)
+
+    Returns
+    -------
+    float
+        The heuristic value of the current game state to the specified player.
+    """
     if game.is_loser(player):
         return float("-inf")
     if game.is_winner(player):
@@ -86,12 +143,9 @@ def custom_score_dist(game, player):
     own_moves = len(own_legal_moves)
     own_last_move = game.get_player_location(player)
 
-    opp_legal_moves = game.get_legal_moves(game.get_opponent(player))
-    opp_moves = len(opp_legal_moves)
     opp_last_move = game.get_player_location(game.get_opponent(player))
 
     score = float(own_moves)
-
     dist = abs(own_last_move[0] - opp_last_move[0]) + abs(own_last_move[1] - opp_last_move[1])
 
     return score + dist * 0.1
@@ -304,7 +358,7 @@ class CustomPlayer:
                 if score_tmp > score:
                     score = score_tmp
                     best_move = move
-                if (score >= beta):
+                if score >= beta:
                     return score, move
                 alpha = max(alpha, score)
         else:
@@ -314,7 +368,7 @@ class CustomPlayer:
                 if score_tmp < score:
                     score = score_tmp
                     best_move = move
-                if (score <= alpha):
+                if score <= alpha:
                     return score, move
                 beta = min(beta, score)
 
